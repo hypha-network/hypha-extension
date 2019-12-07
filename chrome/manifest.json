@@ -1,0 +1,26 @@
+{
+  "manifest_version": 2,
+  "name": "Hypha Publication",
+  "short_name": "Hypha",
+  "version": "0.0.1",
+  "description": "Peer 2 peer publication and messaging.",
+  "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "browser_action": {
+    "default_title": "Hypha",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "background": {
+    "scripts": ["background.js", "hot-reload.js"]
+  },
+  "permissions": []
+}
