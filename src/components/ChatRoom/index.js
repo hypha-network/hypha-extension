@@ -2,12 +2,12 @@ import React, { useEffect, useState, useContext } from 'react'
 import PeerId from 'peer-id'
 import pull from 'pull-stream'
 
-import { IpfsContext } from '../Context'
+import { ipfsContext } from '../Context'
 
 const protocalName = '/chat/1.0.0'
 
 export const ChatRoom = () => {
-  const { ipfsNode } = useContext(IpfsContext)
+  const { ipfsNode } = useContext(ipfsContext)
 
   const [viewerId, setViewerId] = useState('')
   const [remotePeerId, setRemotePeerId] = useState('')

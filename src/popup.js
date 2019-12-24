@@ -1,13 +1,17 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { render } from 'react-dom'
+import { ApolloProvider } from '@apollo/react-hooks'
 
+import { client } from './common/apollo'
 import { ChatRoom, IpfsProvider } from './components'
 import './popup.css'
 
 const Popup = () => (
   <IpfsProvider>
-    <ChatRoom />
+    <ApolloProvider client={client}>
+      <ChatRoom />
+    </ApolloProvider>
   </IpfsProvider>
 )
 
-ReactDOM.render(<Popup />, document.querySelector('#root'))
+render(<Popup />, document.querySelector('#root'))

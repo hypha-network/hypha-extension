@@ -1,11 +1,11 @@
 import IPFS from 'ipfs'
 import React, { createContext, useState, useEffect } from 'react'
 
-export const IpfsContext = createContext({
-  ipfsNode: null
+export const ipfsContext = createContext({
+  ipfsNode: null,
 })
 
-export const IpfsConsumer = IpfsContext.Consumer
+export const IpfsConsumer = ipfsContext.Consumer
 
 export const IpfsProvider = ({ children }) => {
   const [ipfsNode, setIpfsNode] = useState(null)
@@ -15,10 +15,10 @@ export const IpfsProvider = ({ children }) => {
       libp2p: {
         config: {
           dht: {
-            enabled: true
-          }
-        }
-      }
+            enabled: true,
+          },
+        },
+      },
     }).then((node, error) => {
       if (error) {
         throw error
@@ -28,6 +28,6 @@ export const IpfsProvider = ({ children }) => {
   }, [])
 
   return (
-    <IpfsContext.Provider value={{ ipfsNode }}>{children}</IpfsContext.Provider>
+    <ipfsContext.Provider value={{ ipfsNode }}>{children}</ipfsContext.Provider>
   )
 }

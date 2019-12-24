@@ -1,1 +1,1 @@
-export { IpfsProvider, IpfsContext } from './ipfs'
+export { IpfsProvider, ipfsContext } from './ipfs'
