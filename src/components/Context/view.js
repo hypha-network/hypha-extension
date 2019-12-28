@@ -2,19 +2,17 @@ import React, { createContext, useState } from 'react'
 
 import { VIEWS } from '../../common/enums'
 
-export const viewContext = createContext({
+export const ViewContext = createContext({
   view: VIEWS.WELCOME,
   setView: view => {},
 })
 
-export const viewConsumer = viewContext.Consumer
-
-export const viewProvider = ({ children }) => {
+export const ViewProvider = ({ children }) => {
   const [view, setView] = useState(VIEWS.WELCOME)
 
   return (
-    <viewContext.Provider value={{ view, setView }}>
+    <ViewContext.Provider value={{ view, setView }}>
       {children}
-    </viewContext.Provider>
+    </ViewContext.Provider>
   )
 }

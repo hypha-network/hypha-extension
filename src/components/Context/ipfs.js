@@ -1,33 +1,39 @@
 import IPFS from 'ipfs'
-import React, { createContext, useState, useEffect } from 'react'
+import PeerID from 'peer-id'
+import OrbitDB from 'orbit-db'
+import { createContext, useState, useEffect } from 'react'
+import store from 'store'
 
-export const ipfsContext = createContext({
-  ipfsNode: null,
+import { STORE_KEYS } from '../../common/enums'
+import { createIpfsNode } from '../../common/utils'
+
+const protocalName = '/chat/1.0.0'
+
+export const IpfsContext = createContext({
+  ipfs: null,
+  orbitDB: null
 })
 
-export const IpfsConsumer = ipfsContext.Consumer
-
 export const IpfsProvider = ({ children }) => {
-  const [ipfsNode, setIpfsNode] = useState(null)
+  const [ipfs, setIpfs] = useState(null)
+  const [orbitDB, setOrbitDB] = useState(null)
 
   useEffect(() => {
-    IPFS.create({
-      libp2p: {
-        config: {
-          dht: {
-            enabled: true,
-          },
-        },
-      },
-    }).then((node, error) => {
-      if (error) {
+    createIpfsNode().then(async ipfsNode => {
+      setIpfs(ipfsNode)
+
+      try {
+        const orbitdbNode = await OrbitDB.createInstance(ipfsNode)
+        setOrbitDB(orbitdbNode)
+      } catch (error) {
         throw error
       }
-      setIpfsNode(node)
     })
   }, [])
 
   return (
-    <ipfsContext.Provider value={{ ipfsNode }}>{children}</ipfsContext.Provider>
+    <IpfsContext.Provider value={{ ipfs, orbitDB }}>
+      {children}
+    </IpfsContext.Provider>
   )
 }

@@ -1,1 +1,4 @@
-{ "presets": ["@babel/preset-env", "@babel/preset-react"] }
+{
+  "presets": ["@babel/preset-env", "@babel/preset-react", "@babel/preset-flow"],
+  "plugins": ["styled-jsx/babel", "@babel/plugin-transform-runtime"]
+}

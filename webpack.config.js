@@ -1,24 +1,26 @@
 const path = require('path')
+const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
-const baseManifest = require('./chrome/manifest.json')
 const WebpackExtensionManifestPlugin = require('webpack-extension-manifest-plugin')
+
+const baseManifest = require('./chrome/manifest.json')
 
 const config = {
   mode: 'development',
-  devtool: 'inline-source-map',
+  devtool: 'cheap-module-source-map',
   // devtool: 'cheap-module-source-map',
   entry: {
     popup: path.join(__dirname, './src/popup.js'),
     content: path.join(__dirname, './src/content.js'),
-    background: path.join(__dirname, './src/background.js'),
+    background: path.join(__dirname, './src/background.js')
   },
   output: {
     path: path.resolve(__dirname, './build'),
-    filename: '[name].js',
+    filename: '[name].js'
   },
   resolve: {
-    extensions: ['*', '.js', '.json'],
+    extensions: ['*', '.js', '.jsx', '.json']
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -26,48 +28,61 @@ const config = {
       meta: {
         charset: 'utf-8',
         viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no',
-        'theme-color': '#000000',
+        'theme-color': '#000000'
       },
       chunks: ['popup', 'vendors'],
       manifest: 'manifest.json',
       filename: 'popup.html',
       template: './src/popup.html',
-      hash: true,
+      hash: true
     }),
     new CopyPlugin([
       {
         from: 'chrome/icons',
-        to: 'icons',
+        to: 'icons'
       },
       {
         from: 'chrome/hot-reload.js',
-        to: 'hot-reload.js',
-      },
+        to: 'hot-reload.js'
+      }
     ]),
     new WebpackExtensionManifestPlugin({
       config: {
-        base: baseManifest,
-      },
+        base: baseManifest
+      }
     }),
+    new webpack.ProvidePlugin({
+      React: 'react'
+    })
   ],
   module: {
     rules: [
       {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: require('styled-jsx/webpack').loader,
+            options: {
+              type: 'scoped'
+            }
+          },
+          'babel-loader'
+        ]
+      },
+      {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: ['babel-loader', 'eslint-loader'],
-        // include eslint-loader
+        use: ['babel-loader']
       },
       {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        test: /\.(png|jpg|gif)$/,
+        use: ['file-loader']
       },
-      {
-        test: /\.(png|svg|jpg|gif)$/,
-        use: ['file-loader'],
-      },
-    ],
-  },
+      { test: /\.svg$/, use: ['@svgr/webpack'] }
+    ]
+  }
 }
 
 module.exports = config

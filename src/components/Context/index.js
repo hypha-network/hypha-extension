@@ -1,1 +1,2 @@
-export { IpfsProvider, ipfsContext } from './ipfs'
+export { IpfsProvider, IpfsContext } from './ipfs'
+export { ViewProvider, ViewContext } from './view'

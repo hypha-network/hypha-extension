@@ -2,12 +2,10 @@ import React, { useEffect, useState, useContext } from 'react'
 import PeerId from 'peer-id'
 import pull from 'pull-stream'
 
-import { ipfsContext } from '../Context'
-
-const protocalName = '/chat/1.0.0'
+import { IpfsContext } from '../Context'
 
 export const ChatRoom = () => {
-  const { ipfsNode } = useContext(ipfsContext)
+  const { ipfs } = useContext(IpfsContext)
 
   const [viewerId, setViewerId] = useState('')
   const [remotePeerId, setRemotePeerId] = useState('')
@@ -18,38 +16,21 @@ export const ChatRoom = () => {
 
   // get viewer id, assign protocal
   useEffect(() => {
-    if (ipfsNode) {
-      ipfsNode.id().then(({ id }, err) => {
+    if (ipfs) {
+      ipfs.id().then(({ id }, err) => {
         if (err) {
           throw err
         }
         setViewerId(id)
-      })
-
-      ipfsNode.libp2p.handle(protocalName, (protocol, connection) => {
-        pull(
-          connection,
-          pull.collect((err, data) => {
-            if (err) {
-              throw err
-            }
-
-            const message = JSON.parse(data.toString())
-            setDialog(dialog => dialog.concat([message]))
-
-            // temperally set repose target for now
-            setRemotePeerId(message.from)
-          })
-        )
       })
     }
   })
 
   // get address from id
   useEffect(() => {
-    if (ipfsNode && remotePeerId) {
+    if (ipfs && remotePeerId) {
       const peerId = PeerId.createFromB58String(remotePeerId)
-      ipfsNode.libp2p.peerRouting.findPeer(peerId).then((peerInfo, err) => {
+      ipfs.libp2p.peerRouting.findPeer(peerId).then((peerInfo, err) => {
         if (err) {
           throw err
         }
@@ -59,9 +40,9 @@ export const ChatRoom = () => {
   }, [remotePeerId])
 
   const handleSubmit = event => {
-    if (ipfsNode && remotePeerInfo) {
+    if (ipfs && remotePeerInfo) {
       const message = { content: messageDraft, from: viewerId }
-      ipfsNode.libp2p.dialProtocol(
+      ipfs.libp2p.dialProtocol(
         remotePeerInfo,
         protocalName,
         (err, connection) => {
@@ -82,7 +63,7 @@ export const ChatRoom = () => {
         style={{
           display: 'flex',
           width: '100%',
-          alignItems: 'baseline',
+          alignItems: 'baseline'
         }}
       >
         <input
@@ -103,7 +84,7 @@ export const ChatRoom = () => {
             height: 10,
             width: 10,
             borderRadius: 10,
-            margin: 5,
+            margin: 5
           }}
         />
       </form>
@@ -112,7 +93,7 @@ export const ChatRoom = () => {
           display: 'flex',
           flexDirection: 'column',
           width: '60%',
-          margin: 10,
+          margin: 10
         }}
       >
         {dialog.map(({ content, from }, index) => (
