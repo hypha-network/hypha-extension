@@ -1,11 +1,11 @@
 import { useEffect, useContext, useState } from 'react'
 import gql from 'graphql-tag'
 import { useQuery } from '@apollo/react-hooks'
-import fetch from 'unfetch'
 import store from 'store'
+import DotLoader from 'react-spinners/DotLoader'
 
 import { client as apolloClient } from '../common/apollo'
-import { Spinner, IpfsContext, ViewContext } from '../components'
+import { IpfsContext, ViewContext } from '../components'
 import { VIEWS, STORE_KEYS } from '../common/enums'
 
 const ME_PROFILE = gql`
@@ -18,7 +18,7 @@ const ME_PROFILE = gql`
   }
 `
 
-const convertBlobToBase64 = blob =>
+const blobToBase64 = blob =>
   new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onerror = reject
@@ -26,6 +26,26 @@ const convertBlobToBase64 = blob =>
       resolve(reader.result)
     }
     reader.readAsDataURL(blob)
+  })
+
+const toDataURL = url =>
+  new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+
+    xhr.onload = reject
+    xhr.onload = () => {
+      const reader = new FileReader()
+      reader.onerror = reject
+      reader.onload = () => {
+        resolve(reader.result)
+      }
+      reader.readAsDataURL(xhr.response)
+    }
+
+    xhr.open('GET', url)
+    xhr.responseType = 'blob'
+    xhr.overrideMimeType('text/plain; charset=x-user-defined')
+    xhr.send()
   })
 
 export const Welcome = () => {
@@ -44,7 +64,7 @@ export const Welcome = () => {
 
       setLoadingText(`Setting up profile for ${userName}`)
 
-      fetch(avatar).then(async data => {
+      toDataURL(avatar).then(async avatarBase64 => {
         // save peer id locally
         const peerID = ipfs.libp2p.peerInfo.id.toJSON()
         store.set(STORE_KEYS.PEER_ID, peerID)
@@ -56,13 +76,11 @@ export const Welcome = () => {
             write: [orbitDB.identity.id]
           }
         })
-        const avatarBlob = await data.blob()
-        const avatarBase64 = await convertBlobToBase64(avatarBlob)
 
-        db.put('displayName', displayName, { pin: true })
-        db.put('userName', userName, { pin: true })
-        db.put('avatar', avatarBase64, { pin: true })
-        db.put('id', peerID.id, { pin: true })
+        await db.put('displayName', displayName, { pin: true })
+        await db.put('userName', userName, { pin: true })
+        await db.put('avatar', avatarBase64, { pin: true })
+        await db.put('id', peerID.id, { pin: true })
         store.set(STORE_KEYS.ME, db.address.toString())
 
         setView(VIEWS.MESSAGES)
@@ -83,7 +101,7 @@ export const Welcome = () => {
         }}
       >
         <span style={{ color: 'grey' }}>{loadingText}</span>
-        <Spinner />
+        <DotLoader size={40} />
       </section>
     </article>
   )

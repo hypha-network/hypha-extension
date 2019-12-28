@@ -1,17 +1,20 @@
 import { useContext, useState } from 'react'
 import store from 'store'
+import BounceLoader from 'react-spinners/BounceLoader'
 
 import { STORE_KEYS } from '../../common/enums'
 import { IpfsContext } from '../Context'
-import { Spinner } from '../Loader'
 
 export const Header = () => {
   const { orbitDB } = useContext(IpfsContext)
   const [avatar, setAvatar] = useState(null)
 
-  orbitDB.open(store.get(STORE_KEYS.ME)).then(db => {
-    setAvatar(db.get('avatar'))
-    console.log({ avatar })
+  orbitDB.open(store.get(STORE_KEYS.ME)).then(async db => {
+    await db.load()
+    const test = db.get('avatar')
+    setAvatar(test)
+
+    console.log({ test, db })
   })
 
   return (
@@ -30,8 +33,23 @@ export const Header = () => {
       >
         <button style={{ border: 'none' }}>add</button>
 
-        <button style={{ border: 'none' }}>
-          {avatar ? <img src={avatar} /> : <Spinner />}
+        <button
+          style={{
+            height: '100%',
+            width: 40,
+            border: 'none',
+            borderRadius: '100%',
+            overflow: 'hidden'
+          }}
+        >
+          {avatar ? (
+            <img
+              src={avatar}
+              style={{ height: 'auto', width: '100%', display: 'block' }}
+            />
+          ) : (
+            <BounceLoader size={20} />
+          )}
         </button>
       </nav>
     </header>

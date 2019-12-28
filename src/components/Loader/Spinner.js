@@ -1,5 +1,5 @@
 import Icon from '../../static/spinner.svg'
-import styles from './styles.css'
+// import styles from './styles.css'
 
 export const Spinner = (styles = {}) => (
   <div className="spinner" aria-label="loading">
@@ -10,6 +10,6 @@ export const Spinner = (styles = {}) => (
         ...styles
       }}
     />
-    <style jsx>{styles}</style>
+    {/* <style jsx>{styles}</style> */}
   </div>
 )

@@ -59,17 +59,7 @@ const config = {
     rules: [
       {
         test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          {
-            loader: require('styled-jsx/webpack').loader,
-            options: {
-              type: 'scoped'
-            }
-          },
-          'babel-loader'
-        ]
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.(js|jsx)$/,
