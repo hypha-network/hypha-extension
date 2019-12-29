@@ -2,31 +2,32 @@ import { useContext, useState } from 'react'
 import store from 'store'
 import BounceLoader from 'react-spinners/BounceLoader'
 
-import { STORE_KEYS } from '../../common/enums'
-import { IpfsContext } from '../Context'
+import { STORE_KEYS, VIEWS } from '../../common/enums'
+import { IpfsContext, ViewContext } from '../Context'
+import { Avatar } from '../Avatar'
 
 export const Header = () => {
-  const { orbitDB } = useContext(IpfsContext)
-  const [avatar, setAvatar] = useState(null)
+  const [height, buttonWidth] = [40, 40]
 
+  const { orbitDB } = useContext(IpfsContext)
+  const { setView } = useContext(ViewContext)
+
+  const [avatar, setAvatar] = useState(null)
   orbitDB.open(store.get(STORE_KEYS.ME)).then(async db => {
     await db.load()
-    const test = db.get('avatar')
-    setAvatar(test)
-
-    console.log({ test, db })
+    setAvatar(db.get('avatar'))
   })
 
   return (
     <header
-      style={{ width: '100%', height: 40, borderBottom: '1px solid LightGray' }}
+      style={{ width: '100%', height, borderBottom: '1px solid LightGray' }}
     >
       <nav
         style={{
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
-          height: '100%',
+          height,
           paddingRight: 10,
           paddingLeft: 10
         }}
@@ -35,20 +36,18 @@ export const Header = () => {
 
         <button
           style={{
-            height: '100%',
-            width: 40,
+            height,
+            width: buttonWidth,
             border: 'none',
-            borderRadius: '100%',
-            overflow: 'hidden'
+            outline: 'none',
+            cursor: 'pointer'
           }}
+          onClick={() => setView(VIEWS.ME)}
         >
           {avatar ? (
-            <img
-              src={avatar}
-              style={{ height: 'auto', width: '100%', display: 'block' }}
-            />
+            <Avatar src={avatar} size={30} />
           ) : (
-            <BounceLoader size={20} />
+            <BounceLoader size={30} />
           )}
         </button>
       </nav>

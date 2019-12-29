@@ -5,6 +5,7 @@ import store from 'store'
 import DotLoader from 'react-spinners/DotLoader'
 
 import { client as apolloClient } from '../common/apollo'
+import { toDataURL } from '../common/utils'
 import { IpfsContext, ViewContext } from '../components'
 import { VIEWS, STORE_KEYS } from '../common/enums'
 
@@ -17,36 +18,6 @@ const ME_PROFILE = gql`
     }
   }
 `
-
-const blobToBase64 = blob =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onerror = reject
-    reader.onload = () => {
-      resolve(reader.result)
-    }
-    reader.readAsDataURL(blob)
-  })
-
-const toDataURL = url =>
-  new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest()
-
-    xhr.onload = reject
-    xhr.onload = () => {
-      const reader = new FileReader()
-      reader.onerror = reject
-      reader.onload = () => {
-        resolve(reader.result)
-      }
-      reader.readAsDataURL(xhr.response)
-    }
-
-    xhr.open('GET', url)
-    xhr.responseType = 'blob'
-    xhr.overrideMimeType('text/plain; charset=x-user-defined')
-    xhr.send()
-  })
 
 export const Welcome = () => {
   const [loadingText, setLoadingText] = useState(
@@ -64,7 +35,7 @@ export const Welcome = () => {
 
       setLoadingText(`Setting up profile for ${userName}`)
 
-      toDataURL(avatar).then(async avatarBase64 => {
+      toDataURL(avatar).then(async avatarDataUrl => {
         // save peer id locally
         const peerID = ipfs.libp2p.peerInfo.id.toJSON()
         store.set(STORE_KEYS.PEER_ID, peerID)
@@ -79,7 +50,7 @@ export const Welcome = () => {
 
         await db.put('displayName', displayName, { pin: true })
         await db.put('userName', userName, { pin: true })
-        await db.put('avatar', avatarBase64, { pin: true })
+        await db.put('avatar', avatarDataUrl, { pin: true })
         await db.put('id', peerID.id, { pin: true })
         store.set(STORE_KEYS.ME, db.address.toString())
 

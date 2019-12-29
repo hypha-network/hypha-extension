@@ -54,3 +54,55 @@ export const createIpfsNode = async () => {
     throw error
   }
 }
+
+export const toMimeType = extension => {
+  const mapping = {
+    jpe: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    jpg: 'image/jpeg',
+    png: 'image/png',
+    webp: 'image/webp'
+  }
+  return mapping[extension] || 'text/plain'
+}
+
+export const toDataURL = url =>
+  new Promise((resolve, reject) => {
+    const image = new Image()
+
+    image.onload = function() {
+      const canvas = document.createElement('canvas')
+      canvas.width = image.width
+      canvas.height = image.height
+
+      canvas.getContext('2d').drawImage(this, 0, 0)
+
+      // ... or get as Data URI
+      resolve(canvas.toDataURL())
+    }
+    image.onerror = reject
+
+    image.src = url
+  })
+
+// const extension = url.split('.').splice(-1)[0]
+// const mimeType = toMimeType(extension)
+
+// return new Promise((resolve, reject) => {
+//   const xhr = new XMLHttpRequest()
+
+//   xhr.onload = reject
+//   xhr.onload = () => {
+//     const reader = new FileReader()
+//     reader.onerror = reject
+//     reader.onload = () => {
+//       resolve(reader.result)
+//     }
+//     reader.readAsDataURL(xhr.response)
+//   }
+
+//   xhr.open('GET', url)
+//   xhr.responseType = 'blob'
+//   xhr.overrideMimeType(`${mimeType}; charset=x-user-defined`)
+//   xhr.send()
+// })

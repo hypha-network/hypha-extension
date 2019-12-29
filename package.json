@@ -7,7 +7,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "NODE_ENV=development webpack --mode development --watch",
     "format": "prettier --write \"app/**/*.js\"",
-    "gen": "apollo client:codegen __generated__ --target=flow --config apollo.config.js",
     "lint:fix": "eslint --fix \"app/**/*.js\"",
     "build": "webpack --mode production"
   },

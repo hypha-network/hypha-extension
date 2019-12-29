@@ -5,7 +5,7 @@ import { ApolloProvider } from '@apollo/react-hooks'
 import { client as ApolloClient } from './common/apollo'
 import { VIEWS } from './common/enums'
 import { ChatRoom, IpfsProvider, ViewProvider, ViewContext } from './components'
-import { Welcome, Messages } from './views'
+import { Welcome, Messages, Me } from './views'
 import './popup.css'
 
 const Views = () => {
@@ -16,6 +16,8 @@ const Views = () => {
       return <Welcome />
     case VIEWS.MESSAGES:
       return <Messages />
+    case VIEWS.ME:
+      return <Me />
     default:
       return <Welcome />
   }
