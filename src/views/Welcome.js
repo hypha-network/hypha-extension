@@ -29,14 +29,19 @@ export const Welcome = () => {
   const { setView } = useContext(ViewContext)
 
   useEffect(() => {
-    if (!store.get(STORE_KEYS.PEER_ID) && data && orbitDB) {
+    // !store.get(STORE_KEYS.PEER_ID) &&
+    if (data && orbitDB) {
       const {
         viewer: { avatar, displayName, userName }
       } = data
 
       setLoadingText(`Setting up profile for ${userName}`)
 
-      toDataURL(avatar).then(async avatarDataUrl => {
+      // fall back to default avatar
+      toDataURL(
+        avatar ||
+          'https://matters.news/_next/static/images/avatar-default-304cc068bcc93e4522fbc9b1dd59f112.svg'
+      ).then(async avatarDataUrl => {
         // save peer id locally
         const peerID = ipfs.libp2p.peerInfo.id.toJSON()
         store.set(STORE_KEYS.PEER_ID, peerID)

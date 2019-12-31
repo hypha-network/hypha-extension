@@ -17,16 +17,22 @@ export const Explore = () => {
       orbitDB.open(address).then(async db => {
         await db.load()
 
-        setProfile({
-          avatar: db.get('avatar'),
-          userName: db.get('userName'),
-          displayName: db.get('displayName')
-        })
+        const avatar = db.get('avatar')
+        const userName = db.get('userName')
+        const displayName = db.get('displayName')
+
+        if (avatar || userName || displayName) {
+          setProfile({
+            avatar: db.get('avatar'),
+            userName: db.get('userName'),
+            displayName: db.get('displayName')
+          })
+        }
       })
     }
   }, [address])
 
-  console.log({ address, profile })
+  // console.log({ address, profile })
   return address ? (
     profile ? (
       <div
