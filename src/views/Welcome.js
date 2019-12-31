@@ -29,6 +29,10 @@ export const Welcome = () => {
   const { setView } = useContext(ViewContext)
 
   useEffect(() => {
+    // if (store.get(STORE_KEYS.ME)) {
+    //   setView(VIEWS.MESSAGES)
+    // }
+
     // !store.get(STORE_KEYS.PEER_ID) &&
     if (data && orbitDB) {
       const {
@@ -59,10 +63,10 @@ export const Welcome = () => {
         await db.put('avatar', avatarDataUrl, { pin: true })
         await db.put('id', peerID.id, { pin: true })
         store.set(STORE_KEYS.ME, db.address.toString())
+
+        setView(VIEWS.MESSAGES)
       })
     }
-
-    setView(VIEWS.MESSAGES)
   })
 
   return (
