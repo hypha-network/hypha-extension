@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import store from 'store'
 import BounceLoader from 'react-spinners/BounceLoader'
 
@@ -32,19 +32,25 @@ const styles = {
 export const Header = () => {
   const { orbitDB } = useContext(IpfsContext)
   const { setView, setAddress, address, view } = useContext(ViewContext)
+  const [avatar, setAvatar] = useState(null)
 
-  // special case for explore
+  useEffect(() => {
+    if (view !== VIEWS.WELCOME && !avatar && orbitDB) {
+      orbitDB.open(store.get(STORE_KEYS.ME)).then(async db => {
+        await db.load()
+        setAvatar(db.get('avatar'))
+      })
+    }
+  })
+
+  // skip welcome view
+  if (view === VIEWS.WELCOME) {
+    return null
+  }
+
+  // special icon for explore
   const isExplore = view === VIEWS.EXPLORE
   const Icon = isExplore ? CrossIcon : PlusIcon
-
-  // render avatar
-  const [avatar, setAvatar] = useState(null)
-  if (!avatar) {
-    orbitDB.open(store.get(STORE_KEYS.ME)).then(async db => {
-      await db.load()
-      setAvatar(db.get('avatar'))
-    })
-  }
 
   return (
     <header style={styles.header}>
@@ -57,7 +63,16 @@ export const Header = () => {
         >
           <Icon style={{ height: 25, width: 25, paddingTop: 5 }} />
         </button>
-        {isExplore ? <input /> : null}
+        {isExplore ? (
+          <input
+            onKeyDown={e => {
+              // submit
+              if (e.key === 'Enter') {
+                setAddress(e.target.value)
+              }
+            }}
+          />
+        ) : null}
         <button style={styles.button} onClick={() => setView(VIEWS.ME)}>
           {avatar ? (
             <Avatar src={avatar} size={30} />

@@ -23,12 +23,13 @@ export const Welcome = () => {
   const [loadingText, setLoadingText] = useState(
     'Synchronizing with mattters.news'
   )
+
   const { loading, error, data } = useQuery(ME_PROFILE)
   const { orbitDB, ipfs } = useContext(IpfsContext)
   const { setView } = useContext(ViewContext)
 
   useEffect(() => {
-    if (data && orbitDB) {
+    if (!store.get(STORE_KEYS.PEER_ID) && data && orbitDB) {
       const {
         viewer: { avatar, displayName, userName }
       } = data
@@ -53,10 +54,10 @@ export const Welcome = () => {
         await db.put('avatar', avatarDataUrl, { pin: true })
         await db.put('id', peerID.id, { pin: true })
         store.set(STORE_KEYS.ME, db.address.toString())
-
-        setView(VIEWS.MESSAGES)
       })
     }
+
+    setView(VIEWS.MESSAGES)
   })
 
   return (

@@ -8,25 +8,26 @@ import { Me } from './Me'
 import { Messages } from './Messages'
 import { Welcome } from './Welcome'
 
-export const Layout = () => {
+export const View = () => {
   const { view } = useContext(ViewContext)
 
-  let Component = Welcome
   switch (view) {
     case VIEWS.MESSAGES:
-      Component = Messages
+      return <Messages />
     case VIEWS.ME:
-      Component = Me
+      return <Me />
     case VIEWS.EXPLORE:
-      Component = Explore
+      return <Explore />
+    default:
+      return <Welcome />
   }
-
-  return (
-    <>
-      {view !== VIEWS.WELCOME && <Header />}
-      <article>
-        <Component />
-      </article>
-    </>
-  )
 }
+
+export const Layout = () => (
+  <>
+    <Header />
+    <article>
+      <View />
+    </article>
+  </>
+)

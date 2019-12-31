@@ -7,5 +7,6 @@ export const VIEWS = {
 
 export const STORE_KEYS = {
   ME: 'me',
-  PEER_ID: 'peerID'
+  PEER_ID: 'peerID',
+  CONTACTS: 'contacts'
 }
