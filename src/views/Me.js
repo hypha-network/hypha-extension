@@ -1,5 +1,5 @@
 import store from 'store'
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 
 import { STORE_KEYS, VIEWS } from '../common/enums'
 import { Header, IpfsContext } from '../components'
@@ -15,13 +15,18 @@ const styles = {
 
 export const Me = () => {
   const { orbitDB, ipfs } = useContext(IpfsContext)
-  const [peerCount, setPeerCount] = useState(0)
+  const [peerCount, setPeerCount] = useState()
 
   // poll peer number
-  setInterval(
-    () => ipfs.swarm.peers().then(peers => setPeerCount(peers.length)),
-    3 * 1000
-  )
+  useEffect(() => {
+    const pollId = setInterval(
+      () => ipfs.swarm.peers().then(peers => setPeerCount(peers.length)),
+      3 * 1000
+    )
+
+    // cleanup
+    return () => clearInterval(pollId)
+  }, [])
 
   return (
     <>

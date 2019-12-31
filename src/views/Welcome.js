@@ -29,7 +29,7 @@ export const Welcome = () => {
   const { setView } = useContext(ViewContext)
 
   useEffect(() => {
-    // if (store.get(STORE_KEYS.ME)) {
+    // if (store.get(STORE_KEYS.ME) && orbitDB && ipfs) {
     //   setView(VIEWS.MESSAGES)
     // }
 
