@@ -1,7 +1,8 @@
 export const VIEWS = {
   WELCOME: 'welcome',
   MESSAGES: 'messages',
-  ME: 'me'
+  ME: 'me',
+  EXPLORE: 'explore'
 }
 
 export const STORE_KEYS = {

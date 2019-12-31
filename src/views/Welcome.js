@@ -60,20 +60,18 @@ export const Welcome = () => {
   })
 
   return (
-    <article>
-      <section
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          marginTop: 50,
-          height: 100,
-          justifyContent: 'space-between'
-        }}
-      >
-        <span style={{ color: 'grey' }}>{loadingText}</span>
-        <DotLoader size={40} />
-      </section>
-    </article>
+    <section
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        marginTop: 50,
+        height: 100,
+        justifyContent: 'space-between'
+      }}
+    >
+      <span style={{ color: 'grey' }}>{loadingText}</span>
+      <DotLoader size={40} />
+    </section>
   )
 }
