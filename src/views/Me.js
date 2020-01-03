@@ -10,12 +10,17 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     margin: 10
+  },
+  pre: {
+    overflow: 'scroll',
+    width: 220
   }
 }
 
 export const Me = () => {
   const { orbitDB, ipfs } = useContext(IpfsContext)
   const [peerCount, setPeerCount] = useState()
+  const [localAddrs, setLocalAddrs] = useState()
 
   // poll peer number
   useEffect(() => {
@@ -28,6 +33,13 @@ export const Me = () => {
     return () => clearInterval(pollId)
   }, [])
 
+  useEffect(() => {
+    ipfs.swarm.localAddrs().then(addrs => {
+      console.log({ addrs })
+      setLocalAddrs(addrs)
+    })
+  }, [])
+
   return (
     <>
       <section style={styles.section}>
@@ -36,9 +48,11 @@ export const Me = () => {
       </section>
       <section style={styles.section}>
         <span>profile</span>
-        <pre style={{ overflow: 'scroll', width: 220 }}>
-          {store.get(STORE_KEYS.ME)}
-        </pre>
+        <pre style={styles.pre}>{store.get(STORE_KEYS.ME)}</pre>
+      </section>
+      <section style={styles.section}>
+        <span>multiaddr</span>
+        <pre style={styles.pre}>{localAddrs && localAddrs.toString()}</pre>
       </section>
     </>
   )

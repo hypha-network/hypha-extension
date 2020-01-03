@@ -20,6 +20,11 @@ export const IpfsProvider = ({ children }) => {
 
   useEffect(() => {
     createIpfsNode().then(async ipfsNode => {
+      ipfsNode
+        .get('QmeESXh9wPib8Xz7hdRzHuYLDuEUgkYTSuujZ2phQfvznQ')
+        .then(data => {
+          console.log({ data })
+        })
       setIpfs(ipfsNode)
 
       try {

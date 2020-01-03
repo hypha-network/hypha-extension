@@ -20,21 +20,18 @@ const ME_PROFILE = gql`
 `
 
 export const Welcome = () => {
-  const [loadingText, setLoadingText] = useState(
-    'Synchronizing with mattters.news'
-  )
+  const [loadingText, setLoadingText] = useState('Starting IPFS node')
 
   const { loading, error, data } = useQuery(ME_PROFILE)
   const { orbitDB, ipfs } = useContext(IpfsContext)
   const { setView } = useContext(ViewContext)
 
   useEffect(() => {
-    // if (store.get(STORE_KEYS.ME) && orbitDB && ipfs) {
-    //   setView(VIEWS.MESSAGES)
-    // }
+    if (store.get(STORE_KEYS.ME) && orbitDB && ipfs) {
+      setView(VIEWS.MESSAGES)
+    }
 
-    // !store.get(STORE_KEYS.PEER_ID) &&
-    if (data && orbitDB) {
+    if (!store.get(STORE_KEYS.PEER_ID) && data && orbitDB) {
       const {
         viewer: { avatar, displayName, userName }
       } = data

@@ -17,6 +17,17 @@ export const createIpfsNode = async () => {
     // }
 
     const ipfs = await IPFS.create({
+      EXPERIMENTAL: {
+        pubsub: true
+      },
+      config: {
+        Addresses: {
+          // ...And supply a swarm address to announce on to find other peers
+          Swarm: [
+            '/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star'
+          ]
+        }
+      },
       libp2p: {
         config: {
           dht: {

@@ -59,6 +59,14 @@ export const Profile = ({ address }) => {
         const userName = db.get('userName')
         const displayName = db.get('displayName')
 
+        db.events.on('replicated', address => {
+          console.log({ replicated: address })
+        })
+
+        db.events.on('peer', peer => {
+          console.log({ peer })
+        })
+
         if (avatar || userName || displayName) {
           setProfile({
             avatar: db.get('avatar'),
