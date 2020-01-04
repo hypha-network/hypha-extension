@@ -1,5 +1,6 @@
 import store from 'store'
 import { useContext, useState, useEffect } from 'react'
+import multiaddr from 'multiaddr'
 
 import { STORE_KEYS, VIEWS } from '../common/enums'
 import { Header, IpfsContext } from '../components'
@@ -53,6 +54,19 @@ export const Me = () => {
       <section style={styles.section}>
         <span>multiaddr</span>
         <pre style={styles.pre}>{localAddrs && localAddrs.toString()}</pre>
+      </section>
+      <section style={styles.section}>
+        <span>connect</span>
+        <input
+          onKeyDown={e => {
+            // submit
+            if (e.key === 'Enter') {
+              ipfs.swarm.connect(multiaddr(e.target.value)).then(conn => {
+                conn
+              })
+            }
+          }}
+        />
       </section>
     </>
   )

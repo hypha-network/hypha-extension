@@ -24,6 +24,7 @@
     "graphql": "^14.5.8",
     "graphql-tag": "^2.10.1",
     "ipfs": "^0.40.0",
+    "multiaddr": "^7.2.1",
     "orbit-db": "^0.23.0",
     "peer-id": "^0.13.5",
     "pull-stream": "^3.6.14",

@@ -20,9 +20,11 @@ export const createIpfsNode = async () => {
       EXPERIMENTAL: {
         pubsub: true
       },
+      relay: { enabled: true, hop: { enabled: true, active: true } },
+      repo: './ipfs',
       config: {
         Addresses: {
-          // ...And supply a swarm address to announce on to find other peers
+          // And supply a swarm address to announce on to find other peers
           Swarm: [
             '/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star'
           ]

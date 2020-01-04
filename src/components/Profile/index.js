@@ -65,6 +65,8 @@ export const Profile = ({ address }) => {
 
         db.events.on('peer', peer => {
           console.log({ peer })
+
+          console.log(db.get('userName'))
         })
 
         if (avatar || userName || displayName) {
