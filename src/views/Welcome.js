@@ -20,23 +20,45 @@ const ME_PROFILE = gql`
 `
 
 export const Welcome = () => {
-  const [loadingText, setLoadingText] = useState('Starting IPFS node')
+  const [loadingText, setLoadingText] = useState('Checking browser')
 
   const { loading, error, data } = useQuery(ME_PROFILE)
   const { orbitDB, ipfs } = useContext(IpfsContext)
   const { setView } = useContext(ViewContext)
 
   useEffect(() => {
-    if (store.get(STORE_KEYS.ME) && orbitDB && ipfs) {
+    const key = store.get(STORE_KEYS.ME)
+
+    // already setup
+    if (key && orbitDB && ipfs) {
       setView(VIEWS.MESSAGES)
+      return
     }
 
-    if (!store.get(STORE_KEYS.PEER_ID) && data && orbitDB) {
+    // not connected to matters.news
+    // const cookie = browser.cookies.get({
+    //   url: 'https://matters.news',
+    //   name: 'token'
+    // }).then((data, error) => {
+    //   if (!data.value) {
+    //     setLoadingText(`Please connect to matters`)
+    //   }
+    // })
+    // console.log({ cookie })
+    setLoadingText(`connecting to matters.news`)
+
+    if (!key && data && orbitDB) {
       const {
         viewer: { avatar, displayName, userName }
       } = data
 
-      setLoadingText(`Setting up profile for ${userName}`)
+      // not logged in
+      if (!userName) {
+        setLoadingText(`please login to matters.news`)
+        return
+      }
+
+      setLoadingText(`setting up profile for ${userName}`)
 
       // fall back to default avatar
       toDataURL(
@@ -64,7 +86,7 @@ export const Welcome = () => {
         setView(VIEWS.MESSAGES)
       })
     }
-  })
+  }, [orbitDB, ipfs])
 
   return (
     <section

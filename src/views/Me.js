@@ -36,7 +36,6 @@ export const Me = () => {
 
   useEffect(() => {
     ipfs.swarm.localAddrs().then(addrs => {
-      console.log({ addrs })
       setLocalAddrs(addrs)
     })
   }, [])

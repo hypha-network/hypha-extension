@@ -42,8 +42,9 @@ const watchChanges = (dir, lastTimestamp) => {
   })
 }
 
-chrome.management.getSelf(self => {
-  if (self.installType === 'development') {
+// hot-reload for chrome
+if (self.installType === 'development' && typeof chrome !== 'undefined') {
+  chrome.management.getSelf(self => {
     chrome.runtime.getPackageDirectoryEntry(dir => watchChanges(dir))
-  }
-})
+  })
+}

@@ -82,7 +82,7 @@ export const toMimeType = extension => {
 export const toDataURL = url =>
   new Promise((resolve, reject) => {
     const image = new Image()
-
+    image.crossOrigin = 'anonymous'
     image.onload = function() {
       const canvas = document.createElement('canvas')
       canvas.width = image.width

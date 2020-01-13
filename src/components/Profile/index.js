@@ -41,44 +41,58 @@ const buttonStyle = {
   cursor: 'pointer'
 }
 
+const getAndSetProfile = async ({ db, setProfile }) => {
+  console.log('getAndSetProfile')
+  await db.load()
+
+  const avatar = db.get('avatar')
+  const userName = db.get('userName')
+  const displayName = db.get('displayName')
+
+  if (avatar || userName || displayName) {
+    setProfile({
+      avatar: db.get('avatar'),
+      userName: db.get('userName'),
+      displayName: db.get('displayName')
+    })
+  } else {
+    db.events.on('replicated', () => {
+      console.log('replicated')
+      getAndSetProfile({ db, setProfile })
+    })
+
+    db.events.on('replicate', () => {
+      console.log('replicate')
+      getAndSetProfile({ db, setProfile })
+    })
+
+    db.events.on(
+      'replicate.progress',
+      (address, hash, entry, progress, have) => {
+        console.log({ address, hash, entry, progress, have })
+      }
+    )
+
+    db.events.on('peer', peer => {
+      console.log('peer')
+      getAndSetProfile({ db, setProfile })
+    })
+  }
+}
+
 export const Profile = ({ address }) => {
   const { orbitDB } = useContext(IpfsContext)
   const [profile, setProfile] = useState(null)
-  const [contacts, setContacts] = useState([])
-
-  // get contact list
-  useEffect(() => setContacts(store.get(STORE_KEYS.CONTACTS) || []), [])
+  const [contacts, setContacts] = useState(store.get(STORE_KEYS.CONTACTS) || [])
 
   // get profile data
   useEffect(() => {
     if (address && orbitDB) {
-      orbitDB.open(address).then(async db => {
-        await db.load()
-
-        const avatar = db.get('avatar')
-        const userName = db.get('userName')
-        const displayName = db.get('displayName')
-
-        db.events.on('replicated', address => {
-          console.log({ replicated: address })
-        })
-
-        db.events.on('peer', peer => {
-          console.log({ peer })
-
-          console.log(db.get('userName'))
-        })
-
-        if (avatar || userName || displayName) {
-          setProfile({
-            avatar: db.get('avatar'),
-            userName: db.get('userName'),
-            displayName: db.get('displayName')
-          })
-        }
+      orbitDB.open(address).then(db => {
+        getAndSetProfile({ db, setProfile })
       })
     }
-  }, [address])
+  }, [address, orbitDB])
 
   return profile ? (
     <div
